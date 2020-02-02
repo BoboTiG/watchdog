@@ -89,6 +89,7 @@ import os.path
 import logging
 import re
 from pathtools.patterns import match_any_paths
+from watchdog.utils import cached_property
 from watchdog.utils import has_attribute
 from watchdog.utils import unicode_paths
 
@@ -319,9 +320,10 @@ class FileSystemEventHandler(object):
     Base file system event handler that you can override methods from.
     """
 
-    def __init__(self):
-        # Map of event type -> method to call
-        self.method_map = {
+    @cached_property
+    def method_map(self):
+        """Map of event type -> method to call."""
+        return {
             EVENT_TYPE_CREATED: self.on_created,
             EVENT_TYPE_DELETED: self.on_deleted,
             EVENT_TYPE_MODIFIED: self.on_modified,
@@ -453,15 +455,7 @@ class PatternMatchingEventHandler(FileSystemEventHandler):
                            included_patterns=self.patterns,
                            excluded_patterns=self.ignore_patterns,
                            case_sensitive=self.case_sensitive):
-            self.on_any_event(event)
-            _method_map = {
-                EVENT_TYPE_MODIFIED: self.on_modified,
-                EVENT_TYPE_MOVED: self.on_moved,
-                EVENT_TYPE_CREATED: self.on_created,
-                EVENT_TYPE_DELETED: self.on_deleted,
-            }
-            event_type = event.event_type
-            _method_map[event_type](event)
+            super(PatternMatchingEventHandler, self).dispatch(event)
 
 
 class RegexMatchingEventHandler(FileSystemEventHandler):
@@ -536,15 +530,7 @@ class RegexMatchingEventHandler(FileSystemEventHandler):
             return
 
         if any(r.match(p) for r in self.regexes for p in paths):
-            self.on_any_event(event)
-            _method_map = {
-                EVENT_TYPE_MODIFIED: self.on_modified,
-                EVENT_TYPE_MOVED: self.on_moved,
-                EVENT_TYPE_CREATED: self.on_created,
-                EVENT_TYPE_DELETED: self.on_deleted,
-            }
-            event_type = event.event_type
-            _method_map[event_type](event)
+            super(RegexMatchingEventHandler, self).dispatch(event)
 
 
 class LoggingEventHandler(FileSystemEventHandler):
