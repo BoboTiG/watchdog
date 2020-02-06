@@ -56,6 +56,8 @@ elif platform.is_bsd():
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+emitter = None
+
 
 @pytest.fixture(autouse=True)
 def setup_teardown(tmpdir):
