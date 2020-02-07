@@ -19,9 +19,22 @@
 import sys
 import os.path
 from codecs import open
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, __version__ as setuptools_version
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext
+
+# Check setuptools version
+setuptools_version_tuple = tuple(map(int, setuptools_version.split('.')))
+print(setuptools_version_tuple)
+sys.exit(0)
+if setuptools_version_tuple < (36, 2, 7):
+    raise RuntimeError(
+        'setuptools version error\n'
+        'You need a newer version of setuptools.\n'
+        'Install the recommended minimum version:\n'
+        '    python -m pip install setuptools==36.2.7\n'
+        'and then try again to install watchdog.'
+    )
 
 SRC_DIR = 'src'
 WATCHDOG_PKG_DIR = os.path.join(SRC_DIR, 'watchdog')
