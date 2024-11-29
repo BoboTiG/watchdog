@@ -55,12 +55,12 @@ jobs:
             emoji: 🪟
             runs-on: [windows-latest]
         python:
-          - "3.9"
-          - "3.10"
-          - "3.11"
+          # - "3.9"
+          # - "3.10"
+          # - "3.11"
           - "3.12"
-          - "3.13"
-          - "pypy-3.9"
+          # - "3.13"
+          # - "pypy-3.9"
         exclude:
           - os:
               matrix: macos
