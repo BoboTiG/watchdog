@@ -6,7 +6,6 @@ from watchdog.utils.platform import PLATFORM_WINDOWS, get_platform_name
 
 
 def process_windows_case_renaming(events: list[winapi.WinAPINativeEvent]) -> list[winapi.WinAPINativeEvent]:
-    """"""
     basename = os.path.basename
     idx, events_count = 0, len(events)
     while idx < events_count - 1:
