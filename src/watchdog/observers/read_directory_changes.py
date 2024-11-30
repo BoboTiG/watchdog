@@ -67,26 +67,23 @@ class WindowsApiEmitter(EventEmitter):
         return read_events(self._whandle, self.watch.path, recursive=self.watch.is_recursive)
 
     def queue_events(self, timeout: float) -> None:
-        winapi_events = self._read_events()
+        events = self.events_processor.process(self._read_events())
 
         with self._lock:
             item_renamed_source_path = ""
 
-            for event in winapi_events:
+            for event in events:
                 path = os.path.join(self.watch.path, event.src_path)
 
                 if event.is_renamed_old:
-                    print("Renaming SRC path", path)  # noqa: T201
                     item_renamed_source_path = path
                 elif event.is_renamed_new and item_renamed_source_path:
-                    print("Renaming DST path", path)  # noqa: T201
                     if os.path.isdir(path):
                         self.queue_event(DirMovedEvent(item_renamed_source_path, path))
                         if self.watch.is_recursive:
                             for sub_moved_event in generate_sub_moved_events(item_renamed_source_path, path):
                                 self.queue_event(sub_moved_event)
                     else:
-                        assert 0
                         self.queue_event(FileMovedEvent(item_renamed_source_path, path))
                     item_renamed_source_path = ""
                 elif event.is_modified:

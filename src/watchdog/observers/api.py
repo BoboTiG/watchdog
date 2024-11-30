@@ -7,6 +7,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from watchdog.events_processor import EventsProcessorManager
 from watchdog.utils import BaseThread
 from watchdog.utils.bricks import SkipRepeatsQueue
 
@@ -132,6 +133,7 @@ class EventEmitter(BaseThread):
         self._watch = watch
         self._timeout = timeout
         self._event_filter = frozenset(event_filter) if event_filter is not None else None
+        self.events_processor = EventsProcessorManager()
 
     @property
     def timeout(self) -> float:
