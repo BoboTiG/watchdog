@@ -80,13 +80,13 @@ class WindowsApiEmitter(EventEmitter):
                     item_renamed_source_path = path
                 elif event.is_renamed_new and item_renamed_source_path:
                     print("Renaming DST path", path)  # noqa: T201
-                    assert 0
                     if os.path.isdir(path):
                         self.queue_event(DirMovedEvent(item_renamed_source_path, path))
                         if self.watch.is_recursive:
                             for sub_moved_event in generate_sub_moved_events(item_renamed_source_path, path):
                                 self.queue_event(sub_moved_event)
                     else:
+                        assert 0
                         self.queue_event(FileMovedEvent(item_renamed_source_path, path))
                     item_renamed_source_path = ""
                 elif event.is_modified:
