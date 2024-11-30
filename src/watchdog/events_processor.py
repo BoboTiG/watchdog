@@ -7,11 +7,14 @@ from watchdog.utils.platform import PLATFORM_WINDOWS, get_platform_name
 
 def process_windows_case_renaming(events: list[winapi.WinAPINativeEvent]) -> list[winapi.WinAPINativeEvent]:
     """"""
-    for event1, event2 in zip(events, events[1:]):
+    basename = os.path.basename
+    idx, events_count = 0, len(events)
+    while idx < events_count - 1:
+        event1, event2 = events[idx], events[idx + 1]
         if (
             event1.is_removed
             and event2.is_added
-            and os.path.basename(event1.src_path).lower() == os.path.basename(event2.src_path).lower()
+            and basename(event1.src_path).lower() == basename(event2.src_path).lower()
         ):
             event1.action = winapi.FILE_ACTION_RENAMED_OLD_NAME
             event2.action = winapi.FILE_ACTION_RENAMED_NEW_NAME

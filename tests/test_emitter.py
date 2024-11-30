@@ -202,15 +202,7 @@ def test_case_change(
 
     mv(p("dir1", "file"), p("dir2", "FILE"))
 
-    if not platform.is_windows():
-        expect_event(FileMovedEvent(p("dir1", "file"), p("dir2", "FILE")))
-    else:
-        event = event_queue.get(timeout=5)[0]
-        assert event.src_path == p("dir1", "file")
-        assert isinstance(event, FileDeletedEvent)
-        event = event_queue.get(timeout=5)[0]
-        assert event.src_path == p("dir2", "FILE")
-        assert isinstance(event, FileCreatedEvent)
+    expect_event(FileMovedEvent(p("dir1", "file"), p("dir2", "FILE")))
 
     event = event_queue.get(timeout=5)[0]
     assert event.src_path in [p("dir1"), p("dir2")]
