@@ -21,18 +21,27 @@ RENAMED_NEW = winapi.WinAPINativeEvent(winapi.FILE_ACTION_RENAMED_NEW_NAME, ADDE
         ([], []),
         ([ADDED], [ADDED]),
         ([ADDED, ADDED2], [ADDED, ADDED2]),
-        ([REMOVED, ADDED], [RENAMED_OLD, RENAMED_NEW]),  # Match!
         ([REMOVED, ADDED2], [REMOVED, ADDED2]),
         ([REMOVED, ADDED2, ADDED], [REMOVED, ADDED2, ADDED]),
-        ([REMOVED, ADDED, REMOVED, ADDED], [RENAMED_OLD, RENAMED_NEW, RENAMED_OLD, RENAMED_NEW]),  # Match!
-        (
-            # Match!
-            [REMOVED, ADDED, ADDED2, REMOVED, ADDED],
-            [RENAMED_OLD, RENAMED_NEW, ADDED2, RENAMED_OLD, RENAMED_NEW],
-        ),
     ],
 )
-def test_process_windows_case_renaming(
-    events: list[winapi.WinAPINativeEvent], expected: list[winapi.WinAPINativeEvent]
+def test_process_windows_case_renaming_no_match(
+    events: list[winapi.WinAPINativeEvent],
+    expected: list[winapi.WinAPINativeEvent],
+) -> None:
+    assert events_processor.process_windows_case_renaming(events) == expected
+
+
+@pytest.mark.parametrize(
+    ("events", "expected"),
+    [
+        ([REMOVED, ADDED], [RENAMED_OLD, RENAMED_NEW]),
+        ([REMOVED, ADDED, REMOVED, ADDED], [RENAMED_OLD, RENAMED_NEW, RENAMED_OLD, RENAMED_NEW]),
+        ([REMOVED, ADDED, ADDED2, REMOVED, ADDED], [RENAMED_OLD, RENAMED_NEW, ADDED2, RENAMED_OLD, RENAMED_NEW]),
+    ],
+)
+def test_process_windows_case_renaming_match(
+    events: list[winapi.WinAPINativeEvent],
+    expected: list[winapi.WinAPINativeEvent],
 ) -> None:
     assert events_processor.process_windows_case_renaming(events) == expected

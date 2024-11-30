@@ -21,6 +21,8 @@ def process_windows_case_renaming(events: list) -> list:
         ):
             event1.action = winapi.FILE_ACTION_RENAMED_OLD_NAME
             event2.action = winapi.FILE_ACTION_RENAMED_NEW_NAME
+            idx += 1
+        idx += 1
     return events
 
 

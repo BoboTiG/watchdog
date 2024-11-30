@@ -44,7 +44,7 @@ def rerun_filter(exc, *args):
     return bool(issubclass(exc[0], Empty) and platform.is_windows())
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_create(p: P, event_queue: TestEventQueue, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     start_watching()
     open(p("a"), "a").close()
@@ -64,7 +64,7 @@ def test_create(p: P, event_queue: TestEventQueue, start_watching: StartWatching
 
 
 @pytest.mark.skipif(not platform.is_linux(), reason="FileClosed*Event only supported in GNU/Linux")
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_closed(p: P, event_queue: TestEventQueue, start_watching: StartWatching) -> None:
     with open(p("a"), "a"):
         start_watching()
@@ -92,7 +92,7 @@ def test_closed(p: P, event_queue: TestEventQueue, start_watching: StartWatching
     assert event_queue.empty()
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 @pytest.mark.skipif(
     platform.is_darwin() or platform.is_windows(),
     reason="Windows and macOS enforce proper encoding",
@@ -111,7 +111,7 @@ def test_create_wrong_encoding(p: P, event_queue: TestEventQueue, start_watching
         assert isinstance(event, DirModifiedEvent)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_delete(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkfile(p("a"))
 
@@ -124,7 +124,7 @@ def test_delete(p: P, start_watching: StartWatching, expect_event: ExpectEvent) 
         expect_event(DirModifiedEvent(p()))
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_modify(p: P, event_queue: TestEventQueue, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkfile(p("a"))
     start_watching()
@@ -144,7 +144,7 @@ def test_modify(p: P, event_queue: TestEventQueue, start_watching: StartWatching
         assert isinstance(event, FileClosedEvent)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_chmod(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkfile(p("a"))
     start_watching()
@@ -159,7 +159,7 @@ def test_chmod(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -
     os.chmod(p("a"), stat.S_IWRITE)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_move(p: P, event_queue: TestEventQueue, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkdir(p("dir1"))
     mkdir(p("dir2"))
@@ -188,7 +188,7 @@ def test_move(p: P, event_queue: TestEventQueue, start_watching: StartWatching, 
         assert isinstance(event, DirModifiedEvent)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_case_change(
     p: P,
     event_queue: TestEventQueue,
@@ -214,7 +214,7 @@ def test_case_change(
         assert isinstance(event, DirModifiedEvent)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_move_to(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkdir(p("dir1"))
     mkdir(p("dir2"))
@@ -243,7 +243,7 @@ def test_move_to_full(p: P, event_queue: TestEventQueue, start_watching: StartWa
     assert event.src_path == ""  # Should be blank since the path was not watched
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_move_from(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkdir(p("dir1"))
     mkdir(p("dir2"))
@@ -272,7 +272,7 @@ def test_move_from_full(p: P, event_queue: TestEventQueue, start_watching: Start
     assert event.dest_path == ""  # Should be blank since path not watched
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_separate_consecutive_moves(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkdir(p("dir1"))
     mkfile(p("dir1", "a"))
@@ -299,7 +299,7 @@ def test_separate_consecutive_moves(p: P, start_watching: StartWatching, expect_
         expect_event(expected_event)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 @pytest.mark.skipif(platform.is_bsd(), reason="BSD create another set of events for this test")
 def test_delete_self(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     mkdir(p("dir1"))
@@ -345,7 +345,7 @@ def test_fast_subdirectory_creation_deletion(p: P, event_queue: TestEventQueue, 
     }
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_passing_unicode_should_give_unicode(p: P, event_queue: TestEventQueue, start_watching: StartWatching) -> None:
     start_watching(path=str(p()))
     mkfile(p("a"))
@@ -364,7 +364,7 @@ def test_passing_bytes_should_give_bytes(p: P, event_queue: TestEventQueue, star
     assert isinstance(event.src_path, bytes)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_recursive_on(p: P, event_queue: TestEventQueue, start_watching: StartWatching) -> None:
     mkdir(p("dir1", "dir2", "dir3"), parents=True)
     start_watching()
@@ -390,7 +390,7 @@ def test_recursive_on(p: P, event_queue: TestEventQueue, start_watching: StartWa
             assert isinstance(event, FileModifiedEvent)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_recursive_off(
     p: P,
     event_queue: TestEventQueue,
@@ -434,7 +434,7 @@ def test_recursive_off(
         expect_event(DirModifiedEvent(p()))
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 def test_renaming_top_level_directory(
     p: P,
     event_queue: TestEventQueue,
@@ -526,7 +526,7 @@ def test_move_nested_subdirectories(
     assert isinstance(event, FileModifiedEvent)
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 @pytest.mark.skipif(
     not platform.is_windows(),
     reason="Non-Windows create another set of events for this test",
@@ -574,7 +574,7 @@ def test_move_nested_subdirectories_on_windows(
             assert event.src_path in [p("dir2"), p("dir2", "dir3")]
 
 
-#@pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
+# @pytest.mark.flaky(max_runs=5, min_passes=1, rerun_filter=rerun_filter)
 @pytest.mark.skipif(platform.is_bsd(), reason="BSD create another set of events for this test")
 def test_file_lifecyle(p: P, start_watching: StartWatching, expect_event: ExpectEvent) -> None:
     start_watching()
