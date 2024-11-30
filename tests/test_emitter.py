@@ -202,7 +202,8 @@ def test_case_change(
 
     mv(p("dir1", "file"), p("dir2", "FILE"))
 
-    expect_event(FileMovedEvent(p("dir1", "file"), p("dir2", "FILE")))
+    event = FileMovedEvent(p("dir1", "file"), p("dir2", "FILE"))
+    expect_event(event)
 
     event = event_queue.get(timeout=5)[0]
     assert event.src_path in [p("dir1"), p("dir2")]

@@ -16,20 +16,17 @@ RENAMED_NEW = winapi.WinAPINativeEvent(winapi.FILE_ACTION_RENAMED_NEW_NAME, ADDE
 
 
 @pytest.mark.parametrize(
-    ("events", "expected"),
+    "events",
     [
-        ([], []),
-        ([ADDED], [ADDED]),
-        ([ADDED, ADDED2], [ADDED, ADDED2]),
-        ([REMOVED, ADDED2], [REMOVED, ADDED2]),
-        ([REMOVED, ADDED2, ADDED], [REMOVED, ADDED2, ADDED]),
+        [],
+        [ADDED],
+        [ADDED, ADDED2],
+        [REMOVED, ADDED2],
+        [REMOVED, ADDED2, ADDED],
     ],
 )
-def test_process_windows_case_renaming_no_match(
-    events: list[winapi.WinAPINativeEvent],
-    expected: list[winapi.WinAPINativeEvent],
-) -> None:
-    assert events_processor.process_windows_case_renaming(events) == expected
+def test_process_windows_case_renaming_no_match(events: list[winapi.WinAPINativeEvent]) -> None:
+    assert events_processor.process_windows_case_renaming(events) == events
 
 
 @pytest.mark.parametrize(
