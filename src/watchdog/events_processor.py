@@ -1,11 +1,15 @@
+from __future__ import annotations
+
 import os.path
 from typing import Callable, NamedTuple
 
-from watchdog.observers import winapi
 from watchdog.utils.platform import PLATFORM_WINDOWS, get_platform_name
 
 
-def process_windows_case_renaming(events: list[winapi.WinAPINativeEvent]) -> list[winapi.WinAPINativeEvent]:
+def process_windows_case_renaming(events: list) -> list:
+    """`events` is of type list[winapi.WinAPINativeEvent]."""
+    from watchdog.observers import winapi
+
     basename = os.path.basename
     idx, events_count = 0, len(events)
     while idx < events_count - 1:

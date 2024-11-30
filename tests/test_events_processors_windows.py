@@ -1,11 +1,12 @@
 import pytest
 
-from watchdog.utils.platform import PLATFORM_WINDOWS
+from watchdog.utils.platform import is_windows
 
-pytest.mark.skipif(not PLATFORM_WINDOWS)
+if not is_windows():
+    pytest.skip(reason="Windows only", allow_module_level=True)
 
-from watchdog import events_processor  # noqa: E402
-from watchdog.observers import winapi  # noqa: E402
+from watchdog import events_processor
+from watchdog.observers import winapi
 
 ADDED = winapi.WinAPINativeEvent(winapi.FILE_ACTION_ADDED, r"some\file.txt")
 ADDED2 = winapi.WinAPINativeEvent(winapi.FILE_ACTION_ADDED, r"some\file2.txt")
@@ -21,7 +22,14 @@ RENAMED_NEW = winapi.WinAPINativeEvent(winapi.FILE_ACTION_RENAMED_NEW_NAME, ADDE
         ([ADDED], [ADDED]),
         ([ADDED, ADDED2], [ADDED, ADDED2]),
         ([REMOVED, ADDED], [RENAMED_OLD, RENAMED_NEW]),  # Match!
-        ([REMOVED, ADDED2], [REMOVED, ADDED2])([REMOVED, ADDED2, ADDED], [REMOVED, ADDED2, ADDED]),
+        ([REMOVED, ADDED2], [REMOVED, ADDED2]),
+        ([REMOVED, ADDED2, ADDED], [REMOVED, ADDED2, ADDED]),
+        ([REMOVED, ADDED, REMOVED, ADDED], [RENAMED_OLD, RENAMED_NEW, RENAMED_OLD, RENAMED_NEW]),  # Match!
+        (
+            # Match!
+            [REMOVED, ADDED, ADDED2, REMOVED, ADDED],
+            [RENAMED_OLD, RENAMED_NEW, ADDED2, RENAMED_OLD, RENAMED_NEW],
+        ),
     ],
 )
 def test_process_windows_case_renaming(
